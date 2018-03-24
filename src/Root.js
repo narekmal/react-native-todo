@@ -1,20 +1,22 @@
 import React from 'react';
-import {StackNavigator} from 'react-navigation';
 import {KeyboardAvoidingView} from 'react-native';
-import List from './List';
-import Home from './Home';
+import Login from './components/Login';
 
-var Navigator = StackNavigator({
-    Home: { screen: Home },
-    List: { screen: List },
-});
+import {Provider} from 'react-redux';
+import {createStore, applyMiddleware} from 'redux';
+import thunk from 'redux-thunk';
+import rootReducer from './reducers';
+
+const initialState = undefined;
+const middleware = [thunk];
+const store = createStore(rootReducer, initialState, applyMiddleware(...middleware));
 
 export default class App extends React.Component {
   render() {
     return (
-        <KeyboardAvoidingView style={{flex: 1}}>
-            <Navigator />
-        </KeyboardAvoidingView>
+      <Provider store={store}>
+        <Login />
+      </Provider>
     );
   }
 }

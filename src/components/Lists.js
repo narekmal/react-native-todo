@@ -1,10 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, TextInput, TouchableHighlight } from 'react-native';
 import axios from 'axios';
-//import uuid from 'uuid';
 const uuidv = require('uuid/v4');
 
-export default class Root extends React.Component {
+export default class Lists extends React.Component {
 
     static navigationOptions = {
         title: 'Lists',
