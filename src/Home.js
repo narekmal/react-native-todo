@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, TouchableHighlight } from 'react-native';
 import axios from 'axios';
-import uuid from 'uuid';
+//import uuid from 'uuid';
+const uuidv = require('uuid/v4');
 
 export default class Root extends React.Component {
 
@@ -9,17 +10,21 @@ export default class Root extends React.Component {
         title: 'Lists',
     };
 
+    apiUrl = 'http://narek-dev.com/react-native-api?';
+
     constructor() {
         super();
         this.state = {
             lists:{},
             nameFilter: null,
-            addingList: false
+            addingList: false,
+            newListName: ''
         };
 
         axios
-            .get("http://narek-dev.com/react-native-api/")
+            .get(this.apiUrl + "operation=getall")
             .then(response => {
+                console.log(response.data);
                 this.setState({lists: response.data});
             })
             .catch(error => {console.log(error);});
@@ -31,12 +36,23 @@ export default class Root extends React.Component {
 
     handleAddListClick(){
         this.setState({addingList: true});
-        //console.log(this.refs.addListInput);
     }
 
-    handleAddListInputChanged(text){
-        //this.setState({lists: {'eidjd8374': {'name': text}}});
-        console.log(text);
+    handleAddListInputChanged(){
+        try{
+            console.log(this.state.newListName);
+            var newListName = this.state.newListName;
+            this.setState((prevState, props) => {
+                var uuid = uuidv();
+                prevState.lists.uuid={name: newListName, items: {}};
+                prevState.addingList = false;
+                return prevState;
+            });
+        }
+        catch(error){
+            console.log(error);
+        }
+        
     }
 
     render() { 
@@ -65,10 +81,13 @@ export default class Root extends React.Component {
                         placeholder="Add List"
                         ref="addListInput"
                         onSubmitEditing={this.handleAddListInputChanged.bind(this)}
+                        onChangeText={(text) => this.setState({newListName: text})}
                         />
                 </View>
                 <View style={{flexDirection: 'row'}}>
-                    <Button title="Add List" onPress={this.handleAddListClick.bind(this)} color='green' style={{flexBasis: '50%'}} />
+                    <TouchableHighlight onPress={this.handleAddListClick.bind(this)} style={{flexBasis: '50%'}}>
+                        <Text>AddList</Text>
+                    </TouchableHighlight>
                     <TextInput onChangeText={this.handleFilterTextChanged.bind(this)} placeholder="Filter By Name" style={{flexBasis: '50%'}}></TextInput>
                 </View>
             </View>
