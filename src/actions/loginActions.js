@@ -1,11 +1,11 @@
-import {LOGIN_START, LOGIN_END} from './types';
+import {LOGIN_START, LOGIN_END, LOGOUT} from './types';
 import axios from 'axios';
 import config from '../AppConfig';
 
-export default function login(userName, password){
+export function login(userName, password){
     return function(dispatch){
         dispatch({type: LOGIN_START});
-        console.log('apiUrl', config);
+        console.log('logging in', userName, password);
         axios
             .get(config.apiUrl, { params: {
                 operation: 'login',
@@ -13,12 +13,19 @@ export default function login(userName, password){
                 password: password
             }})
             .then(response => {
-                console.log(response.data);
+                console.log('logged in', response.data);
                 dispatch({
                     type: LOGIN_END,
-                    payload: response.data
+                    authToken: response.data.token,
+                    userName: userName
                 });
             })
             .catch(error => {console.log(error);});
     }
+}
+
+export function logout(){
+  return {
+    type: LOGOUT
+  }
 }

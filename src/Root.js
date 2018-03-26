@@ -3,13 +3,8 @@ import {KeyboardAvoidingView} from 'react-native';
 import Login from './components/Login';
 
 import {Provider} from 'react-redux';
-import {createStore, applyMiddleware} from 'redux';
-import thunk from 'redux-thunk';
-import rootReducer from './reducers';
 
-const initialState = undefined;
-const middleware = [thunk];
-const store = createStore(rootReducer, initialState, applyMiddleware(...middleware));
+import store from './store/store';
 
 export default class App extends React.Component {
   render() {

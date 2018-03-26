@@ -1,36 +1,41 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, TextInput, TouchableHighlight } from 'react-native';
 import axios from 'axios';
-const uuidv = require('uuid/v4');
+import {connect} from 'react-redux';
+import {logout} from '../actions/loginActions';
+import {getLists, addList, deleteList} from '../actions/listActions';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-export default class Lists extends React.Component {
+class Lists extends React.Component {
 
     static navigationOptions = {
-        title: 'Lists',
+      title: 'Lists',
     };
 
-    apiUrl = 'http://narek-dev.com/react-native-api?';
+    constructor(props) {
+      super();
 
-    constructor() {
-        super();
-        this.state = {
-            lists:{},
-            nameFilter: null,
-            addingList: false,
-            newListName: ''
-        };
+      console.log(props);
 
-        axios
-            .get(this.apiUrl + "operation=getall")
-            .then(response => {
-                console.log(response.data);
-                this.setState({lists: response.data});
-            })
-            .catch(error => {console.log(error);});
+      this.state = {
+          nameFilter: null,
+          addingList: false,
+          newListName: ''
+      };
+
+      // Test login has been used
+      if(props.userName){
+        props.getLists();
+      }
     }
 
-    handleFilterTextChanged(text){
-        this.setState({nameFilter: text});
+    componentWillReceiveProps(nextProps){
+      console.log('received new props');
+      // Just logged in
+      if(!this.props.userName && nextProps.userName){
+        this.props.getLists();
+        this.setState({nameFilter: ''})
+      }
     }
 
     handleAddListClick(){
@@ -38,67 +43,82 @@ export default class Lists extends React.Component {
     }
 
     handleAddListInputChanged(){
-        try{
-            console.log(this.state.newListName);
-            var newListName = this.state.newListName;
-            this.setState((prevState, props) => {
-                var uuid = uuidv();
-                prevState.lists.uuid={name: newListName, items: {}};
-                prevState.addingList = false;
-                return prevState;
-            });
-        }
-        catch(error){
-            console.log(error);
-        }
-        
+      if (this.state.newListName)
+        this.props.addList(this.state.newListName);
+      this.setState({addingList: false, newListName: ''});
     }
 
     render() { 
-        const { navigate } = this.props.navigation;
+      const { navigate } = this.props.navigation;
 
-        let lists = Object.keys(this.state.lists)
-            .filter(listId => (!this.state.nameFilter || this.state.lists[listId].name.toLowerCase().startsWith(this.state.nameFilter.toLowerCase())) )
-            .map(listId => {
-                return (
-                    <View key={listId}>
-                        <Text 
-                            onPress={() => navigate('List', this.state.lists[listId])} 
-                            style={{fontSize: 30}}>
-                            {this.state.lists[listId].name}
-                        </Text>
-                    </View>
-                );
-            });
-
-        return (
-            <View  style={{flex: 1}}>
-                <View style={styles.container}>
-                    {lists}
-                    <TextInput 
-                        style={{display: this.state.addingList ? 'flex' : 'none'}} 
-                        placeholder="Add List"
-                        ref="addListInput"
-                        onSubmitEditing={this.handleAddListInputChanged.bind(this)}
-                        onChangeText={(text) => this.setState({newListName: text})}
-                        />
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <TouchableHighlight onPress={this.handleAddListClick.bind(this)} style={{flexBasis: '50%'}}>
-                        <Text>AddList</Text>
-                    </TouchableHighlight>
-                    <TextInput onChangeText={this.handleFilterTextChanged.bind(this)} placeholder="Filter By Name" style={{flexBasis: '50%'}}></TextInput>
-                </View>
+      let lists = Object.keys(this.props.lists)
+        .filter(listId => ( !this.state.nameFilter || this.props.lists[listId].name.toLowerCase().indexOf(this.state.nameFilter.toLowerCase()) != -1 ) )
+        .map(listId => {
+          return (
+            <View key={listId} style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text 
+                onPress={() => navigate('List', this.props.lists[listId])} 
+                style={{fontSize: 30}}>
+                {this.props.lists[listId].name}
+              </Text>
+              <Icon name="close" onPress={()=>{this.props.deleteList(listId)}} style={{marginLeft: 15}} size={34} color="red" />
             </View>
-        );
+          );
+        });
+
+      return (
+        <View  style={{flex: 1}}>
+          <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+            <Text>Logged in as: </Text>
+            <Text style={{fontWeight: 'bold', marginRight: 20}}>{this.props.userName}</Text>
+            <Button onPress={()=>{this.props.logout()}} title="Log out" />
+          </View>
+          <View style={{flex: 1, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center'}}>
+            {lists}
+            <TextInput 
+              style={{display: this.state.addingList ? 'flex' : 'none', width: 150}} 
+              placeholder="Add List"
+              ref="addListInput"
+              onSubmitEditing={this.handleAddListInputChanged.bind(this)}
+              onChangeText={(text) => this.setState({newListName: text})}
+              value={this.state.newListName}
+              />
+          </View>
+          <View style={{flexDirection: 'row'}}>
+            <View style={{flexBasis: '50%', alignItems: 'center', justifyContent: 'center'}}>
+              <Button title="Add List" onPress={this.handleAddListClick.bind(this)}></Button>
+            </View>
+            <TextInput placeholder="Filter By Name" style={{flexBasis: '50%'}} onChangeText={(text)=>this.setState({nameFilter: text})}></TextInput>
+          </View>
+        </View>
+      );
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});
+const mapStateToProps = state => {
+  return {
+      ...state
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+      getLists : () => {
+        dispatch(getLists());
+      },
+      logout : () => {
+        dispatch(logout());
+      },
+      addList : (name) => {
+        dispatch(addList(name));
+      },
+      deleteList : (id) => {
+        dispatch(deleteList(id));
+      }
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Lists);

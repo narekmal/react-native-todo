@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
 import {Text, View, Button, TextInput} from 'react-native';
 import {connect} from 'react-redux';
-import login from '../actions/loginActions';
+import {login} from '../actions/loginActions';
 import {StackNavigator} from 'react-navigation';
 import Lists from './Lists';
 import List from './List';
-//import ListItem from './ListItem';
 
 var Navigator = StackNavigator({
   Lists: { screen: Lists },
@@ -29,7 +28,7 @@ class Login extends Component {
 
   componentWillReceiveProps(nextProps){
     if(this.props.authenticating && !nextProps.authenticating && !nextProps.authToken)
-        alert('Failed Login');
+      alert('Failed Login');
   }
 
   render() {
@@ -39,8 +38,8 @@ class Login extends Component {
         <View style={{display: !this.props.authToken && !this.props.authenticating ? "flex" : "none", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%"}}>
           <Text style={{fontSize: 30}}>Log In</Text>
           <View style={{flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
-            <TextInput onChangeText={(text)=>this.setState({userName: text})} type="text" placeholder="User Name" style={{width: 150}}/>
-            <TextInput onChangeText={(text)=>this.setState({password: text})} type="password" placeholder="Password" style={{width: 150, marginBottom: 20}}/>
+            <TextInput onChangeText={(text)=>this.setState({userName: text})} placeholder="User Name" style={{width: 150}}/>
+            <TextInput onChangeText={(text)=>this.setState({password: text})} placeholder="Password" style={{width: 150, marginBottom: 20}}/>
             <Button onPress={this.handleEnterClick.bind(this)} title="Enter" />
           </View>
         </View>
@@ -49,9 +48,7 @@ class Login extends Component {
           <Text>Authenticating...</Text>
         </View>
 
-        <View style={{display: this.props.authToken ? "flex" : "none", height: "100%"}}>
-          <Navigator></Navigator>
-        </View>
+        <Navigator style={{display: this.props.authToken ? "flex" : "none", height: "100%"}}></Navigator>
           
       </View>
     )
