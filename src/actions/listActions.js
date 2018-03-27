@@ -1,4 +1,4 @@
-import {FETCH_LISTS_END, ADD_LIST, DELETE_LIST} from './types';
+import {FETCH_LISTS_END, ADD_LIST, DELETE_LIST, RENAME_LIST} from './types';
 import axios from 'axios';
 import config from '../AppConfig';
 import store from '../store/store';
@@ -55,6 +55,27 @@ export function deleteList(id){
         operation: 'deletelist',
         token: store.getState().authToken,
         listId: id
+      }})
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {console.log(error);});
+  }
+}
+
+export function renameList(id, name){
+  return function(dispatch){
+    dispatch({
+      type: RENAME_LIST,
+      id: id,
+      name: name
+    });
+    axios
+      .get(config.apiUrl, { params: {
+        operation: 'renamelist',
+        token: store.getState().authToken,
+        listId: id,
+        listName: name
       }})
       .then(response => {
         console.log(response.data);

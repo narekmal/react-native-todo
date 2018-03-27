@@ -1,4 +1,5 @@
-import {LOGIN_START, LOGIN_END, LOGOUT, FETCH_LISTS_END, ADD_LIST, DELETE_LIST} from '../actions/types';
+import {LOGIN_START, LOGIN_END, LOGOUT, FETCH_LISTS_END, ADD_LIST, DELETE_LIST, RENAME_LIST,
+  TOGGLE_LIST_ITEM_COMPLETED, ADD_ITEM, DELETE_ITEM} from '../actions/types';
 
 var skipLogin = {userName: 'test1', token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QxIn0.o3aipk9-2J4JFIdz5nOOHtdK2uFzttOqX7ZcHRcDUKk'};
 // var skipLogin = false;
@@ -25,7 +26,6 @@ export default function(state = initialState, action) {
         userName: action.authToken ? action.userName : ''
       };
     case LOGOUT:
-      console.log(action);
       return {
         ...state,
         userName: '',
@@ -33,16 +33,11 @@ export default function(state = initialState, action) {
         lists: {}
       };
     case FETCH_LISTS_END:
-      console.log(action);
       return {
         ...state,
         lists: action.lists
       };
     case ADD_LIST:
-      console.log({
-        ...state.lists,
-        [action.id]: {name:action.name, items: {}}
-      });
       return {
         ...state,
         lists: {
@@ -53,8 +48,66 @@ export default function(state = initialState, action) {
     case DELETE_LIST:
       var lists = {...state.lists};
       delete lists[action.id];
-      console.log(lists);
       return {...state, lists: lists};
+    case RENAME_LIST:
+      return {...state, lists: {
+        ...state.lists,
+        [action.id]: {
+          ...state.lists[action.id],
+          name: action.name
+        }
+      }};
+    case TOGGLE_LIST_ITEM_COMPLETED:
+      var item = {...state.lists[action.listId].items[action.itemId]};
+      if(typeof item.completed !== 'undefined')
+        item.completed = !item.completed;
+      else
+        item.completed = true;
+      
+      return {
+        ...state,
+        lists:{
+          ...state.lists,
+          [action.listId]: {
+            ...state.lists[action.listId],
+            items: {
+              ...state.lists[action.listId].items,
+              [action.itemId]: item
+            }
+          }
+        }
+      };
+    case ADD_ITEM:
+      return {
+        ...state,
+        lists: {
+          ...state.lists,
+          [action.listId]: {
+            ...state.lists[action.listId],
+            items: {
+              ...state.lists[action.listId].items,
+              [action.itemId]: {
+                name: action.name,
+                completed: false,
+                content: ''
+              }
+            }
+          }
+        }
+      };
+    case DELETE_ITEM:
+      var newItems = {...state.lists[action.listId].items};
+      delete newItems[action.itemId];
+      return {
+        ...state, 
+        lists: {
+          ...state.lists,
+          [action.listId]: {
+            ...state.lists[action.listId],
+            items: newItems
+          }
+        }
+      };
     default:
       return state;
   }

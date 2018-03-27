@@ -5,7 +5,6 @@ import config from '../AppConfig';
 export function login(userName, password){
     return function(dispatch){
         dispatch({type: LOGIN_START});
-        console.log('logging in', userName, password);
         axios
             .get(config.apiUrl, { params: {
                 operation: 'login',
@@ -13,7 +12,6 @@ export function login(userName, password){
                 password: password
             }})
             .then(response => {
-                console.log('logged in', response.data);
                 dispatch({
                     type: LOGIN_END,
                     authToken: response.data.token,

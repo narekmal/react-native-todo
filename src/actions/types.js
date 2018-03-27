@@ -4,3 +4,7 @@ export const LOGOUT = 'LOGOUT';
 export const FETCH_LISTS_END = 'FETCH_LISTS_END';
 export const ADD_LIST = 'ADD_LIST';
 export const DELETE_LIST = 'DELETE_LIST';
+export const RENAME_LIST = 'RENAME_LIST';
+export const TOGGLE_LIST_ITEM_COMPLETED = 'TOGGLE_LIST_ITEM_COMPLETED';
+export const ADD_ITEM = 'ADD_ITEM';
+export const DELETE_ITEM = 'DELETE_ITEM';

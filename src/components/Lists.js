@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, TextInput, TouchableHighlight } from 'react-native';
-import axios from 'axios';
 import {connect} from 'react-redux';
 import {logout} from '../actions/loginActions';
 import {getLists, addList, deleteList} from '../actions/listActions';
@@ -15,8 +14,6 @@ class Lists extends React.Component {
     constructor(props) {
       super();
 
-      console.log(props);
-
       this.state = {
           nameFilter: null,
           addingList: false,
@@ -30,7 +27,6 @@ class Lists extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-      console.log('received new props');
       // Just logged in
       if(!this.props.userName && nextProps.userName){
         this.props.getLists();
@@ -57,7 +53,7 @@ class Lists extends React.Component {
           return (
             <View key={listId} style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text 
-                onPress={() => navigate('List', this.props.lists[listId])} 
+                onPress={() => navigate('List', {listId})} 
                 style={{fontSize: 30}}>
                 {this.props.lists[listId].name}
               </Text>
