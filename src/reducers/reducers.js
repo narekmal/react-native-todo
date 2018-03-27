@@ -1,5 +1,5 @@
 import {LOGIN_START, LOGIN_END, LOGOUT, FETCH_LISTS_END, ADD_LIST, DELETE_LIST, RENAME_LIST,
-  TOGGLE_LIST_ITEM_COMPLETED, ADD_ITEM, DELETE_ITEM} from '../actions/types';
+  TOGGLE_LIST_ITEM_COMPLETED, ADD_ITEM, DELETE_ITEM, EDIT_ITEM} from '../actions/types';
 
 var skipLogin = {userName: 'test1', token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QxIn0.o3aipk9-2J4JFIdz5nOOHtdK2uFzttOqX7ZcHRcDUKk'};
 // var skipLogin = false;
@@ -105,6 +105,26 @@ export default function(state = initialState, action) {
           [action.listId]: {
             ...state.lists[action.listId],
             items: newItems
+          }
+        }
+      };
+    case EDIT_ITEM:
+      var newItem = {...state.lists[action.listId].items[action.itemId]};
+      if(action.name !== null)
+        newItem.name = action.name;
+      if(action.content !== null)
+        newItem.content = action.content;
+
+      return {
+        ...state,
+        lists: {
+          ...state.lists,
+          [action.listId]: {
+            ...state.lists[action.listId],
+            items: {
+              ...state.lists[action.listId].items,
+              [action.itemId]: newItem
+            }
           }
         }
       };

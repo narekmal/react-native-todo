@@ -16,7 +16,6 @@ class List extends React.Component {
 
       let listId = props.navigation.state.params.listId;
       let listName = props.lists[listId].name;
-      console.log('in constructor', props);
 
       this.state={
           listName: listName,
@@ -46,15 +45,15 @@ class List extends React.Component {
   }
 
   handleSubmitNewItem(){
-    const { params } = this.props.navigation.state;
+    let { params } = this.props.navigation.state;
     if (this.state.newItemName)
       this.props.addItem(params.listId, this.state.newItemName);
     this.setState({addingItem: false, newItemName: ''});
   }
 
   render() {
-
-    const { params } = this.props.navigation.state;
+    let { params } = this.props.navigation.state;
+    let { navigate } = this.props.navigation;
 
     if (!params)
       return null;
@@ -70,8 +69,8 @@ class List extends React.Component {
           value={list.items[itemId].completed}
           style={{marginRight: 10}} />
         <Text 
-          onPress={() => navigate('ListItem', {itemId})}
-          style={{textDecorationLine: list.items[itemId].completed ? 'line-through' : 'none', color: 'green', fontSize: 20}}>
+          onPress={() => navigate('ListItem', {listId: params.listId, itemId})}
+          style={{textDecorationLine: list.items[itemId].completed ? 'line-through' : 'none', color: 'green', fontSize: 24}}>
           {list.items[itemId].name}
         </Text>
         <Icon name="close" onPress={()=>{this.props.deleteItem(params.listId, itemId)}} style={{marginLeft: 15}} size={30} color="red" />
@@ -82,7 +81,7 @@ class List extends React.Component {
       <View style={{flexDirection: "column", height: '100%'}}>
         <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white'}}>
           <Text style={{display: this.state.editingListName ? 'none' : 'flex', fontSize: 30}}>{list.name}</Text>
-          <TextInput type="text" 
+          <TextInput 
             style={{display: this.state.editingListName ? 'flex' : 'none'}}
             onChangeText={(text) => this.setState({listName: text})}
             value={this.state.listName}

@@ -5,10 +5,12 @@ import {login} from '../actions/loginActions';
 import {StackNavigator} from 'react-navigation';
 import Lists from './Lists';
 import List from './List';
+import ListItem from './ListItem';
 
 var Navigator = StackNavigator({
   Lists: { screen: Lists },
   List: { screen: List },
+  ListItem: { screen: ListItem },
 });
 
 class Login extends Component {
