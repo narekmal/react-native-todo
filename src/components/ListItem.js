@@ -26,7 +26,7 @@ class ListItem extends React.Component {
   handleSubmitNameChange(){
     let newName = this.state.itemName;
     let listId = this.props.navigation.state.params.listId;
-    let itemId = this.props.navigation.state.params.listId;
+    let itemId = this.props.navigation.state.params.itemId;
     this.setState({
       editingItemName: false
     });
@@ -37,7 +37,7 @@ class ListItem extends React.Component {
   handleSubmitContentChange(){
     let newContent = this.state.itemContent;
     let listId = this.props.navigation.state.params.listId;
-    let itemId = this.props.navigation.state.params.listId;
+    let itemId = this.props.navigation.state.params.itemId;
 
     this.props.editItem(listId, itemId, null, newContent);
   }

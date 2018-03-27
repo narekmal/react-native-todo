@@ -77,7 +77,9 @@ export function editItem(listId, itemId, name, content){
       .get(config.apiUrl, { params: {
         operation: 'edititem',
         token: store.getState().authToken,
-        listId, itemId, name, content
+        listId, itemId, 
+        itemName: name, 
+        itemContent: content
       }})
       .then(response => {
         console.log(response.data);

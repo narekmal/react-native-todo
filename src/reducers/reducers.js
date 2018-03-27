@@ -1,8 +1,8 @@
 import {LOGIN_START, LOGIN_END, LOGOUT, FETCH_LISTS_END, ADD_LIST, DELETE_LIST, RENAME_LIST,
   TOGGLE_LIST_ITEM_COMPLETED, ADD_ITEM, DELETE_ITEM, EDIT_ITEM} from '../actions/types';
 
-var skipLogin = {userName: 'test1', token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QxIn0.o3aipk9-2J4JFIdz5nOOHtdK2uFzttOqX7ZcHRcDUKk'};
-// var skipLogin = false;
+//var skipLogin = {userName: 'test1', token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QxIn0.o3aipk9-2J4JFIdz5nOOHtdK2uFzttOqX7ZcHRcDUKk'};
+var skipLogin = false;
 
 const initialState = {
   authToken: skipLogin ? skipLogin.token : '',

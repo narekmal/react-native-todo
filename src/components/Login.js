@@ -24,7 +24,7 @@ class Login extends Component {
     };
   }
 
-  handleEnterClick(){
+  login(){
     this.props.login(this.state.userName, this.state.password);
   }
 
@@ -40,9 +40,9 @@ class Login extends Component {
         <View style={{display: !this.props.authToken && !this.props.authenticating ? "flex" : "none", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%"}}>
           <Text style={{fontSize: 30}}>Log In</Text>
           <View style={{flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
-            <TextInput onChangeText={(text)=>this.setState({userName: text})} placeholder="User Name" style={{width: 150}}/>
-            <TextInput onChangeText={(text)=>this.setState({password: text})} placeholder="Password" style={{width: 150, marginBottom: 20}}/>
-            <Button onPress={this.handleEnterClick.bind(this)} title="Enter" />
+            <TextInput onChangeText={(text)=>this.setState({userName: text})} placeholder="User Name" onSubmitEditing={this.login.bind(this)} style={{width: 150}}/>
+            <TextInput onChangeText={(text)=>this.setState({password: text})} placeholder="Password" onSubmitEditing={this.login.bind(this)} style={{width: 150, marginBottom: 20}}/>
+            <Button onPress={this.login.bind(this)} title="Enter" />
           </View>
         </View>
 
