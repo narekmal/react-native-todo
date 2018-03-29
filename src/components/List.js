@@ -100,7 +100,7 @@ class List extends React.Component {
             />
         </View>
         <View style={{marginTop: 5, marginBottom: 5, alignItems: 'center'}}>
-          <Button title="Add Item" onPress={()=>this.setState({addingItem: true})}></Button>
+          <Icon.Button name='plus' onPress={()=>this.setState({addingItem: true})}>ADD ITEM</Icon.Button>
         </View>
       </View>
     );
