@@ -36,10 +36,13 @@ class Lists extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-    // Just logged in
     if(!this.props.userName && nextProps.userName){
-      this.props.getLists();
+      // Just logged in or created user
       this.setState({nameFilter: ''})
+      if(nextProps.justCreatedUser)
+        alert('User Created');
+      else
+        this.props.getLists();
     }
   }
 
@@ -104,7 +107,7 @@ class Lists extends React.Component {
         </View>
         <View style={{flexDirection: 'row'}}>
           <View style={{flexBasis: '50%', alignItems: 'center', justifyContent: 'center'}}>
-            <Icon.Button name='plus' onPress={this.handleAddListClick.bind(this)}>ADD LIST</Icon.Button>
+            <Ionicon.Button name='md-add' onPress={this.handleAddListClick.bind(this)}>ADD LIST</Ionicon.Button>
           </View>
           <TextInput placeholder='Filter By Name' style={{flexBasis: '50%'}} onChangeText={(text)=>this.setState({nameFilter: text})}></TextInput>
         </View>

@@ -1,29 +1,31 @@
-import {LOGIN_START, LOGIN_END, LOGOUT, FETCH_LISTS_END, ADD_LIST, DELETE_LIST, RENAME_LIST,
+import {AUTH_START, AUTH_END, LOGOUT, FETCH_LISTS_END, ADD_LIST, DELETE_LIST, RENAME_LIST,
   TOGGLE_LIST_ITEM_COMPLETED, ADD_ITEM, DELETE_ITEM, EDIT_ITEM} from '../actions/types';
 
-var skipLogin = {userName: 'test1', token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QxIn0.o3aipk9-2J4JFIdz5nOOHtdK2uFzttOqX7ZcHRcDUKk'};
-//var skipLogin = false;
+//var skipLogin = {userName: 'test1', token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QxIn0.o3aipk9-2J4JFIdz5nOOHtdK2uFzttOqX7ZcHRcDUKk'};
+var skipLogin = false;
 
 const initialState = {
   authToken: skipLogin ? skipLogin.token : '',
   userName: skipLogin ? skipLogin.userName : '',
-  authenticating: false,
+  authActionActive: false,
+  justCreatedUser: false,
   lists: {}
 }
 
 export default function(state = initialState, action) {
   switch(action.type){
-    case LOGIN_START:
+    case AUTH_START:
       return {
         ...state,
-        authenticating: true
+        authActionActive: true
       };
-    case LOGIN_END:
+    case AUTH_END:
       return {
         ...state,
-        authenticating: false,
+        authActionActive: false,
         authToken: action.authToken,
-        userName: action.authToken ? action.userName : ''
+        userName: action.authToken ? action.userName : '',
+        justCreatedUser: action.justCreatedUser
       };
     case LOGOUT:
       return {

@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {renameList} from '../actions/listActions';
 import {toggleListItemCompleted, addItem, deleteItem} from '../actions/listItemActions';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Ionicon from 'react-native-vector-icons/Ionicons';
 
 class List extends React.Component {
 
@@ -100,7 +101,7 @@ class List extends React.Component {
             />
         </View>
         <View style={{marginTop: 5, marginBottom: 5, alignItems: 'center'}}>
-          <Icon.Button name='plus' onPress={()=>this.setState({addingItem: true})}>ADD ITEM</Icon.Button>
+          <Ionicon.Button name='md-add' onPress={()=>this.setState({addingItem: true})}>ADD ITEM</Ionicon.Button>
         </View>
       </View>
     );

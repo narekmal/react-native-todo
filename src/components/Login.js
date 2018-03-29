@@ -1,16 +1,17 @@
 import React, {Component} from 'react';
 import {Text, View, Button, TextInput} from 'react-native';
 import {connect} from 'react-redux';
-import {login} from '../actions/loginActions';
+import {login, createUser} from '../actions/loginActions';
 import {StackNavigator} from 'react-navigation';
 import Lists from './Lists';
 import List from './List';
 import ListItem from './ListItem';
+import Ionicon from 'react-native-vector-icons/Ionicons';
 
 var Navigator = StackNavigator({
   Lists: { screen: Lists },
   List: { screen: List },
-  ListItem: { screen: ListItem },
+  ListItem: { screen: ListItem }
 });
 
 class Login extends Component {
@@ -20,34 +21,52 @@ class Login extends Component {
 
     this.state = {
         userName: '',
-        password: ''
+        password: '',
+        creatingUser: false
     };
   }
 
-  login(){
-    this.props.login(this.state.userName, this.state.password);
+  processInput(){
+    if(!this.state.userName || !this.state.password)
+      return;
+
+    if(this.props.authToken)
+      return;
+    
+    if(this.state.creatingUser)
+      this.props.createUser(this.state.userName, this.state.password);
+    else
+      this.props.login(this.state.userName, this.state.password);
   }
 
   componentWillReceiveProps(nextProps){
-    if(this.props.authenticating && !nextProps.authenticating && !nextProps.authToken)
-      alert('Failed Login');
+    if(this.props.authActionActive && !nextProps.authActionActive && !nextProps.authToken)
+      alert(this.state.creatingUser ? 'Failed to Create User' : 'Failed Login');
   }
 
   render() {
     return (
       <View style={{height: "100%"}}>
 
-        <View style={{display: !this.props.authToken && !this.props.authenticating ? "flex" : "none", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%"}}>
-          <Text style={{fontSize: 30}}>Log In</Text>
-          <View style={{flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
-            <TextInput onChangeText={(text)=>this.setState({userName: text})} placeholder="User Name" onSubmitEditing={this.login.bind(this)} style={{width: 150}}/>
-            <TextInput onChangeText={(text)=>this.setState({password: text})} placeholder="Password" onSubmitEditing={this.login.bind(this)} style={{width: 150, marginBottom: 20}}/>
-            <Button onPress={this.login.bind(this)} title="Enter" />
+        <View style={{display: !this.props.authToken && !this.props.authActionActive ? "flex" : "none", alignItems: "center", justifyContent: "center", height: "100%"}}>
+          <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+            <TextInput onChangeText={(text)=>this.setState({userName: text})} placeholder="User Name" onSubmitEditing={this.processInput.bind(this)} style={{width: 150}}/>
+            <TextInput onChangeText={(text)=>this.setState({password: text})} placeholder="Password" onSubmitEditing={this.processInput.bind(this)} style={{width: 150, marginBottom: 20}} secureTextEntry={true}/>
+            <Ionicon.Button name={this.state.creatingUser ? 'md-add' : 'md-log-in'} onPress={this.processInput.bind(this)}>
+              {this.state.creatingUser ? 'CREATE USER' : 'LOG IN'}
+            </Ionicon.Button>
           </View>
+          <Ionicon.Button 
+            name={this.state.creatingUser ? 'ios-arrow-back' : 'ios-arrow-forward'} 
+            onPress={()=>{this.setState((s, p) => ({...s, creatingUser: !s.creatingUser}))}}
+            >
+            {this.state.creatingUser ? 'LOG IN' : 'CREATE USER'}
+          </Ionicon.Button>
+          <View style={{height: 10}}/>
         </View>
 
-        <View style={{display: this.props.authenticating ? "flex" : "none", alignItems: "center", justifyContent: "center", height: "100%"}}>
-          <Text>Authenticating...</Text>
+        <View style={{display: this.props.authActionActive ? "flex" : "none", alignItems: "center", justifyContent: "center", height: "100%"}}>
+          <Text>Processing...</Text>
         </View>
 
         <Navigator style={{display: this.props.authToken ? "flex" : "none", height: "100%"}}></Navigator>
@@ -67,6 +86,9 @@ const mapDispatchToProps = dispatch => {
   return {
       login : (userName, password) => {
           dispatch(login(userName, password))
+      },
+      createUser : (userName, password) => {
+        dispatch(createUser(userName, password))
       }
   }
 }
