@@ -9,7 +9,8 @@ const initialState = {
   userName: skipLogin ? skipLogin.userName : '',
   authActionActive: false,
   justCreatedUser: false,
-  lists: {}
+  // - change
+  lists: {'testlistid':{name:'', items:{'testitemid':{name:'test item', content: 'test content'}}}}
 }
 
 export default function(state = initialState, action) {
