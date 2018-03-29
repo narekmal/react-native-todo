@@ -14,6 +14,7 @@
     "axios": "^0.18.0",
     "react": "16.2.0",
     "react-native": "0.52.0",
+    "react-native-contacts-wrapper": "^0.2.4",
     "react-native-image-picker": "^0.26.7",
     "react-native-share": "^1.0.27",
     "react-native-vector-icons": "^4.5.0",

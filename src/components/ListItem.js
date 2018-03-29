@@ -5,6 +5,7 @@ import {editItem} from '../actions/listItemActions';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import Maticon from 'react-native-vector-icons/MaterialCommunityIcons';
+import ContactsWrapper from 'react-native-contacts-wrapper';
 var ImagePicker = require('react-native-image-picker');
 
 class ListItem extends React.Component {
@@ -34,7 +35,10 @@ class ListItem extends React.Component {
         'content://media/external/images/media/50',
         'content://media/external/images/media/54',
       ],
-      contacts: []
+      contacts: [
+        {name: 'Test Name 1', phone: '(854) 698-8545', email: 'test1@test.com'},
+        {name: 'Test Name 2', phone: '(956) 745-8725', email: 'test2@test.com'}
+      ]
     }
   }
 
@@ -59,7 +63,7 @@ class ListItem extends React.Component {
 
   attachImage(){
     var options = {
-      title: 'Select Avatar',
+      title: 'Select Image',
       storageOptions: {
         skipBackup: true,
         path: 'images'
@@ -72,12 +76,22 @@ class ListItem extends React.Component {
         console.log('Image picker response = ', response);
       }
       else {
-        //let source = { uri: response.uri };
         console.log(response.uri);
-
         this.setState(state => ({...state, images:[...state.images, response.uri]}) );
       }
     });
+  }
+
+  attachContact(){
+    ContactsWrapper.getContact()
+      .then((contact) => {
+        console.log("contact is", contact);
+        this.setState(state => ({...state, contacts:[...state.contacts, contact]}) );
+      })
+      .catch((error) => {
+        console.log("ERROR CODE: ", error.code);
+        console.log("ERROR MESSAGE: ", error.message);
+      });
   }
 
   render() {
@@ -96,9 +110,20 @@ class ListItem extends React.Component {
           <Ionicon 
             style={{position: 'absolute', right: -15, top: -15, backgroundColor: 'white', borderRadius: 17, width: 30, height: 31}} 
             name='md-close-circle' color='red'
-            // onPress={()=>this.setState(state => ({...state, images: state.images.splice(index, 1)}) )} 
             onPress={()=>this.setState(state => {state.images.splice(index, 1); return state;} )} 
             size={34} />
+        </View>
+      )
+    );
+
+    let contacts = this.state.contacts.map(
+      (contact, index) => (
+        <View key={index} style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Text style={{fontWeight: 'bold'}}>Name: </Text><Text>{contact.name}  </Text>
+          <Text style={{fontWeight: 'bold'}}>Phone: </Text><Text>{contact.phone} </Text>
+          <Ionicon 
+            onPress={()=>this.setState(state => {state.contacts.splice(index, 1); return state;} )} 
+            name='md-close-circle' color='red' size={34} style={{marginLeft: 10}} />
         </View>
       )
     );
@@ -128,8 +153,11 @@ class ListItem extends React.Component {
             {images}
           </View>
         </View>
-        <View style={{alignItems:'center', marginBottom: 10}}> 
-          <Ionicon.Button name='md-add' onPress={()=>this.setState({addingItem: true})}>ATTACH CONTACT</Ionicon.Button>
+        <View style={{alignItems:'center', marginBottom: 10}}>
+          <Ionicon.Button name='md-add' onPress={this.attachContact.bind(this)}>ATTACH CONTACT</Ionicon.Button>
+          <View style={{marginTop: 8}}>
+            {contacts}
+          </View>
         </View>
       </View>
     );
