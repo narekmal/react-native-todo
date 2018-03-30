@@ -1,4 +1,5 @@
-import {TOGGLE_LIST_ITEM_COMPLETED, ADD_ITEM, DELETE_ITEM, EDIT_ITEM} from './types';
+import {TOGGLE_LIST_ITEM_COMPLETED, ADD_ITEM, DELETE_ITEM, RENAME_ITEM, EDIT_ITEM_CONTENT,
+  ADD_ITEM_IMAGE, ADD_ITEM_CONTACT, DELETE_ITEM_IMAGE, DELETE_ITEM_CONTACT} from './types';
 import axios from 'axios';
 import config from '../AppConfig';
 import store from '../store/store';
@@ -67,19 +68,129 @@ export function deleteItem(listId, itemId){
   }
 }
 
-export function editItem(listId, itemId, name, content){
+export function renameItem(listId, itemId, name){
   return function(dispatch){
     dispatch({
-      type: EDIT_ITEM,
-      listId, itemId, name, content
+      type: RENAME_ITEM,
+      listId, itemId, name
     });
     axios
       .get(config.apiUrl, { params: {
-        operation: 'edititem',
+        operation: 'renameitem',
         token: store.getState().authToken,
         listId, itemId, 
-        itemName: name, 
+        itemName: name
+      }})
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {console.log(error);});
+  }
+}
+
+export function editItemContent(listId, itemId, content){
+  return function(dispatch){
+    dispatch({
+      type: EDIT_ITEM_CONTENT,
+      listId, itemId, content
+    });
+    axios
+      .get(config.apiUrl, { params: {
+        operation: 'edititemcontent',
+        token: store.getState().authToken,
+        listId, itemId, 
         itemContent: content
+      }})
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {console.log(error);});
+  }
+}
+
+export function addItemImage(listId, itemId, imageData){
+  return function(dispatch){
+    var uuid = uuidv();
+    dispatch({
+      type: ADD_ITEM_IMAGE,
+      listId: listId,
+      itemId: itemId,
+      imageId: uuid,
+      imageData
+    });
+    axios
+      .get(config.apiUrl, { params: {
+        operation: 'additemimage',
+        token: store.getState().authToken,
+        listId: listId,
+        itemId: itemId,
+        imageId: uuid,
+        imageData: imageData
+      }})
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {console.log(error);});
+  }
+}
+
+export function deleteItemImage(listId, itemId, imageId){
+  return function(dispatch){
+    console.log('**', listId, itemId, imageId);
+    dispatch({
+      type: DELETE_ITEM_IMAGE,
+      listId, itemId, imageId
+    });
+    axios
+      .get(config.apiUrl, { params: {
+        operation: 'deleteitemimage',
+        token: store.getState().authToken,
+        listId, itemId, imageId
+      }})
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {console.log(error);});
+  }
+}
+
+export function addItemContact(listId, itemId, contact){
+  return function(dispatch){
+    var uuid = uuidv();
+    dispatch({
+      type: ADD_ITEM_CONTACT,
+      listId: listId,
+      itemId: itemId,
+      contactId: uuid,
+      contact
+    });
+    axios
+      .get(config.apiUrl, { params: {
+        operation: 'additemcontact',
+        token: store.getState().authToken,
+        listId: listId,
+        itemId: itemId,
+        contactId: uuid,
+        contact: contact
+      }})
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {console.log(error);});
+  }
+}
+
+export function deleteItemContact(listId, itemId, contactId){
+  return function(dispatch){
+    dispatch({
+      type: DELETE_ITEM_CONTACT,
+      listId, itemId, contactId
+    });
+    axios
+      .get(config.apiUrl, { params: {
+        operation: 'deleteitemcontact',
+        token: store.getState().authToken,
+        listId, itemId, contactId
       }})
       .then(response => {
         console.log(response.data);

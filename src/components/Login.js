@@ -10,9 +10,9 @@ import Ionicon from 'react-native-vector-icons/Ionicons';
 
 var Navigator = StackNavigator({
   // - change
-  ListItem: { screen: ListItem },
   Lists: { screen: Lists },
   List: { screen: List },
+  ListItem: { screen: ListItem },
 });
 
 class Login extends Component {

@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, CheckBox, Image } from 'react-native';
 import {connect} from 'react-redux';
-import {editItem} from '../actions/listItemActions';
+import {renameItem, editItemContent, addItemImage, 
+  deleteItemImage, addItemContact, deleteItemContact} from '../actions/listItemActions';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicon from 'react-native-vector-icons/Ionicons';
-import Maticon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ContactsWrapper from 'react-native-contacts-wrapper';
 var ImagePicker = require('react-native-image-picker');
 
@@ -17,10 +17,10 @@ class ListItem extends React.Component {
     super(props);
 
     // - delete
-    this.props.navigation.state.params = {
-      listId: 'testlistid',
-      itemId: 'testitemid'
-    }
+    // this.props.navigation.state.params = {
+    //   listId: 'testlistid',
+    //   itemId: 'testitemid'
+    // }
 
     let listId = this.props.navigation.state.params.listId;
     let itemId = this.props.navigation.state.params.itemId;
@@ -30,15 +30,15 @@ class ListItem extends React.Component {
       itemName: item.name,
       itemContent: item.content,
       editingItemName: false,
-      images: [
-        'content://media/external/images/media/69',
-        'content://media/external/images/media/50',
-        'content://media/external/images/media/54',
-      ],
-      contacts: [
-        {name: 'Test Name 1', phone: '(854) 698-8545', email: 'test1@test.com'},
-        {name: 'Test Name 2', phone: '(956) 745-8725', email: 'test2@test.com'}
-      ]
+      // images: [
+      //   'content://media/external/images/media/69',
+      //   'content://media/external/images/media/50',
+      //   'content://media/external/images/media/54',
+      // ],
+      // contacts: [
+      //   {name: 'Test Name 1', phone: '(854) 698-8545', email: 'test1@test.com'},
+      //   {name: 'Test Name 2', phone: '(956) 745-8725', email: 'test2@test.com'}
+      // ]
     }
   }
 
@@ -50,7 +50,7 @@ class ListItem extends React.Component {
       editingItemName: false
     });
 
-    this.props.editItem(listId, itemId, newName, null);
+    this.props.renameItem(listId, itemId, newName);
   }
 
   handleSubmitContentChange(){
@@ -58,7 +58,7 @@ class ListItem extends React.Component {
     let listId = this.props.navigation.state.params.listId;
     let itemId = this.props.navigation.state.params.itemId;
 
-    this.props.editItem(listId, itemId, null, newContent);
+    this.props.editItemContent(listId, itemId, newContent);
   }
 
   attachImage(){
@@ -77,7 +77,9 @@ class ListItem extends React.Component {
       }
       else {
         console.log(response.uri);
-        this.setState(state => ({...state, images:[...state.images, response.uri]}) );
+        let { params } = this.props.navigation.state;
+        this.props.addItemImage(params.listId, params.itemId, response.uri);
+        //this.setState(state => ({...state, images:[...state.images, response.uri]}) );
       }
     });
   }
@@ -86,11 +88,11 @@ class ListItem extends React.Component {
     ContactsWrapper.getContact()
       .then((contact) => {
         console.log("contact is", contact);
-        this.setState(state => ({...state, contacts:[...state.contacts, contact]}) );
+        let { params } = this.props.navigation.state;
+        this.props.addItemContact(params.listId, params.itemId, JSON.stringify(contact));
       })
       .catch((error) => {
-        console.log("ERROR CODE: ", error.code);
-        console.log("ERROR MESSAGE: ", error.message);
+        console.log("ERROR: ", error.code, error.message);
       });
   }
 
@@ -101,31 +103,35 @@ class ListItem extends React.Component {
       return null;
 
     let item = this.props.lists[params.listId].items[params.itemId];
+    console.log('--', this.props.lists[params.listId].items, params);
 
-    let images = this.state.images.map(
-      (image, index) => (
-        <View key={index} style={{position: 'relative'}}>
-          <Image source={{uri: image}} 
+    let images = Object.keys(item.images).map(
+      (imageId, index) => (
+        <View key={imageId} style={{position: 'relative'}}>
+          <Image source={{uri: item.images[imageId]}} 
             style={{width: 80, height: 80, marginLeft: (index==0) ? 0 : 23, marginBottom: 23}} />
           <Ionicon 
             style={{position: 'absolute', right: -15, top: -15, backgroundColor: 'white', borderRadius: 17, width: 30, height: 31}} 
             name='md-close-circle' color='red'
-            onPress={()=>this.setState(state => {state.images.splice(index, 1); return state;} )} 
+            onPress={()=>{this.props.deleteItemImage(params.listId, params.itemId, imageId)}} 
             size={34} />
         </View>
       )
     );
 
-    let contacts = this.state.contacts.map(
-      (contact, index) => (
-        <View key={index} style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Text style={{fontWeight: 'bold'}}>Name: </Text><Text>{contact.name}  </Text>
-          <Text style={{fontWeight: 'bold'}}>Phone: </Text><Text>{contact.phone} </Text>
-          <Ionicon 
-            onPress={()=>this.setState(state => {state.contacts.splice(index, 1); return state;} )} 
-            name='md-close-circle' color='red' size={34} style={{marginLeft: 10}} />
-        </View>
-      )
+    let contacts = Object.keys(item.contacts).map(
+      (contactId) => {
+        let contact = JSON.parse(item.contacts[contactId]);
+        return (
+          <View key={contactId} style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={{fontWeight: 'bold'}}>Name: </Text><Text>{contact.name}  </Text>
+            <Text style={{fontWeight: 'bold'}}>Phone: </Text><Text>{contact.phone} </Text>
+            <Ionicon 
+              onPress={()=>{this.props.deleteItemContact(params.listId, params.itemId, contactId)}} 
+              name='md-close-circle' color='red' size={34} style={{marginLeft: 10}} />
+          </View>
+        );
+      }
     );
 
     return (
@@ -172,8 +178,23 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    editItem : (listId, itemId, name, content) => {
-      dispatch(editItem(listId, itemId, name, content));
+    renameItem : (listId, itemId, name) => {
+      dispatch(renameItem(listId, itemId, name));
+    },
+    editItemContent : (listId, itemId, content) => {
+      dispatch(editItemContent(listId, itemId, content));
+    },
+    addItemImage : (listId, itemId, imageData) => {
+      dispatch(addItemImage(listId, itemId, imageData));
+    },
+    deleteItemImage : (listId, itemId, imageId) => {
+      dispatch(deleteItemImage(listId, itemId, imageId));
+    },
+    addItemContact : (listId, itemId, contact) => {
+      dispatch(addItemContact(listId, itemId, contact));
+    },
+    deleteItemContact : (listId, itemId, contactId) => {
+      dispatch(deleteItemContact(listId, itemId, contactId));
     }
   }
 }

@@ -1,5 +1,6 @@
 import {AUTH_START, AUTH_END, LOGOUT, FETCH_LISTS_END, ADD_LIST, DELETE_LIST, RENAME_LIST,
-  TOGGLE_LIST_ITEM_COMPLETED, ADD_ITEM, DELETE_ITEM, EDIT_ITEM} from '../actions/types';
+  TOGGLE_LIST_ITEM_COMPLETED, ADD_ITEM, DELETE_ITEM, RENAME_ITEM, EDIT_ITEM_CONTENT,
+  ADD_ITEM_IMAGE, ADD_ITEM_CONTACT, DELETE_ITEM_IMAGE, DELETE_ITEM_CONTACT} from '../actions/types';
 
 var skipLogin = {userName: 'test1', token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QxIn0.o3aipk9-2J4JFIdz5nOOHtdK2uFzttOqX7ZcHRcDUKk'};
 //var skipLogin = false;
@@ -9,8 +10,9 @@ const initialState = {
   userName: skipLogin ? skipLogin.userName : '',
   authActionActive: false,
   justCreatedUser: false,
+  lists: {}
   // - change
-  lists: {'testlistid':{name:'', items:{'testitemid':{name:'test item', content: 'test content'}}}}
+  //lists: {'testlistid':{name:'', items:{'testitemid':{name:'test item', content: 'test content'}}}}
 }
 
 export default function(state = initialState, action) {
@@ -92,7 +94,9 @@ export default function(state = initialState, action) {
               [action.itemId]: {
                 name: action.name,
                 completed: false,
-                content: ''
+                content: '',
+                images: {},
+                contacts: {}
               }
             }
           }
@@ -111,12 +115,9 @@ export default function(state = initialState, action) {
           }
         }
       };
-    case EDIT_ITEM:
+    case RENAME_ITEM:
       var newItem = {...state.lists[action.listId].items[action.itemId]};
-      if(action.name !== null)
-        newItem.name = action.name;
-      if(action.content !== null)
-        newItem.content = action.content;
+      newItem.name = action.name;
 
       return {
         ...state,
@@ -127,6 +128,101 @@ export default function(state = initialState, action) {
             items: {
               ...state.lists[action.listId].items,
               [action.itemId]: newItem
+            }
+          }
+        }
+      };
+    case EDIT_ITEM_CONTENT:
+      var newItem = {...state.lists[action.listId].items[action.itemId]};
+      newItem.content = action.content;
+
+      return {
+        ...state,
+        lists: {
+          ...state.lists,
+          [action.listId]: {
+            ...state.lists[action.listId],
+            items: {
+              ...state.lists[action.listId].items,
+              [action.itemId]: newItem
+            }
+          }
+        }
+      };
+    case ADD_ITEM_IMAGE:
+      return {
+        ...state,
+        lists: {
+          ...state.lists,
+          [action.listId]: {
+            ...state.lists[action.listId],
+            items: {
+              ...state.lists[action.listId].items,
+              [action.itemId]: {
+                ...state.lists[action.listId].items[action.itemId],
+                images: {
+                  ...state.lists[action.listId].items[action.itemId].images,
+                  [action.imageId]: action.imageData
+                }
+              }
+            }
+          }
+        }
+      };
+    case DELETE_ITEM_IMAGE:
+      var newImages = {...state.lists[action.listId].items[action.itemId].images};
+      delete newImages[action.imageId];
+      return {
+        ...state, 
+        lists: {
+          ...state.lists,
+          [action.listId]: {
+            ...state.lists[action.listId],
+            items: {
+              ...state.lists[action.listId].items,
+              [action.itemId] :{
+                ...state.lists[action.listId].items[action.itemId],
+                images: newImages
+              }
+            }
+          }
+        }
+      };
+    case ADD_ITEM_CONTACT:
+      return {
+        ...state,
+        lists: {
+          ...state.lists,
+          [action.listId]: {
+            ...state.lists[action.listId],
+            items: {
+              ...state.lists[action.listId].items,
+              [action.itemId]: {
+                ...state.lists[action.listId].items[action.itemId],
+                contacts: {
+                  ...state.lists[action.listId].items[action.itemId].contacts,
+                  [action.contactId]: action.contact
+                }
+              }
+            }
+          }
+        }
+      };
+    case DELETE_ITEM_CONTACT:
+      var newContacts = {...state.lists[action.listId].items[action.itemId].contacts};
+      delete newContacts[action.contactId];
+      return {
+        ...state, 
+        lists: {
+          ...state.lists,
+          [action.listId]: {
+            ...state.lists[action.listId],
+            items: {
+              ...state.lists[action.listId].items,
+              [action.itemId] :{
+                ...state.lists[action.listId].items[action.itemId],
+                contacts: newContacts
+              }
             }
           }
         }

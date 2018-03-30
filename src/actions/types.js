@@ -1,11 +1,18 @@
 export const AUTH_START = 'AUTH_START';
 export const AUTH_END = 'AUTH_END';
 export const LOGOUT = 'LOGOUT';
+
 export const FETCH_LISTS_END = 'FETCH_LISTS_END';
 export const ADD_LIST = 'ADD_LIST';
 export const DELETE_LIST = 'DELETE_LIST';
 export const RENAME_LIST = 'RENAME_LIST';
+
 export const TOGGLE_LIST_ITEM_COMPLETED = 'TOGGLE_LIST_ITEM_COMPLETED';
 export const ADD_ITEM = 'ADD_ITEM';
 export const DELETE_ITEM = 'DELETE_ITEM';
-export const EDIT_ITEM = 'EDIT_ITEM';
+export const RENAME_ITEM = 'RENAME_ITEM';
+export const EDIT_ITEM_CONTENT = 'EDIT_ITEM_CONTENT';
+export const ADD_ITEM_IMAGE = 'ADD_ITEM_IMAGE';
+export const ADD_ITEM_CONTACT = 'ADD_ITEM_CONTACT';
+export const DELETE_ITEM_IMAGE = 'DELETE_ITEM_IMAGE';
+export const DELETE_ITEM_CONTACT = 'DELETE_ITEM_CONTACT';
