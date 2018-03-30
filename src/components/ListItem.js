@@ -16,12 +16,6 @@ class ListItem extends React.Component {
   constructor(props){
     super(props);
 
-    // - delete
-    // this.props.navigation.state.params = {
-    //   listId: 'testlistid',
-    //   itemId: 'testitemid'
-    // }
-
     let listId = this.props.navigation.state.params.listId;
     let itemId = this.props.navigation.state.params.itemId;
     let item = this.props.lists[listId].items[itemId];
@@ -29,16 +23,7 @@ class ListItem extends React.Component {
     this.state = {
       itemName: item.name,
       itemContent: item.content,
-      editingItemName: false,
-      // images: [
-      //   'content://media/external/images/media/69',
-      //   'content://media/external/images/media/50',
-      //   'content://media/external/images/media/54',
-      // ],
-      // contacts: [
-      //   {name: 'Test Name 1', phone: '(854) 698-8545', email: 'test1@test.com'},
-      //   {name: 'Test Name 2', phone: '(956) 745-8725', email: 'test2@test.com'}
-      // ]
+      editingItemName: false
     }
   }
 
@@ -79,7 +64,6 @@ class ListItem extends React.Component {
         console.log(response.uri);
         let { params } = this.props.navigation.state;
         this.props.addItemImage(params.listId, params.itemId, response.uri);
-        //this.setState(state => ({...state, images:[...state.images, response.uri]}) );
       }
     });
   }

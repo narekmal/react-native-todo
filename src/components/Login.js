@@ -9,10 +9,9 @@ import ListItem from './ListItem';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 
 var Navigator = StackNavigator({
-  // - change
   Lists: { screen: Lists },
   List: { screen: List },
-  ListItem: { screen: ListItem },
+  ListItem: { screen: ListItem }
 });
 
 class Login extends Component {
@@ -21,9 +20,9 @@ class Login extends Component {
     super();
 
     this.state = {
-        userName: '',
-        password: '',
-        creatingUser: false
+      userName: '',
+      password: '',
+      creatingUser: false
     };
   }
 
@@ -79,18 +78,18 @@ class Login extends Component {
 
 const mapStateToProps = state => {
   return {
-      ...state
+    ...state
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-      login : (userName, password) => {
-          dispatch(login(userName, password))
-      },
-      createUser : (userName, password) => {
-        dispatch(createUser(userName, password))
-      }
+    login : (userName, password) => {
+      dispatch(login(userName, password))
+    },
+    createUser : (userName, password) => {
+      dispatch(createUser(userName, password))
+    }
   }
 }
 

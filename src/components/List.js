@@ -13,18 +13,18 @@ class List extends React.Component {
   };
 
   constructor(props){
-      super();
+    super();
 
-      let listId = props.navigation.state.params.listId;
-      let listName = props.lists[listId].name;
+    let listId = props.navigation.state.params.listId;
+    let listName = props.lists[listId].name;
 
-      this.state={
-          listName: listName,
-          editingListName: false,
+    this.state={
+      listName: listName,
+      editingListName: false,
 
-          addingItem: false, 
-          newItemName: ''
-      }
+      addingItem: false, 
+      newItemName: ''
+    }
   }
 
   handleSubmitNameChange(){

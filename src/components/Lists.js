@@ -60,7 +60,6 @@ class Lists extends React.Component {
     let items = Object.values(this.props.lists[listId].items).reduce((a, v) => (a+v.name+', '), '');
     items = items.substring(0, items.length - 2);
     let message = `List: ${this.props.lists[listId].name} \r\nItems: ${items}`;
-    //this.shareOptions.message = this.props.lists[listId].name;
     this.setState({sharing: true, shareMessage: message});
   }
 
