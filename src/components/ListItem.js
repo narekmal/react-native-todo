@@ -63,7 +63,7 @@ class ListItem extends React.Component {
       else {
         console.log(response.uri);
         let { params } = this.props.navigation.state;
-        this.props.addItemImage(params.listId, params.itemId, response.uri);
+        this.props.addItemImage(params.listId, params.itemId, response.data);
       }
     });
   }
@@ -92,7 +92,7 @@ class ListItem extends React.Component {
     let images = Object.keys(item.images).map(
       (imageId, index) => (
         <View key={imageId} style={{position: 'relative'}}>
-          <Image source={{uri: item.images[imageId]}} 
+          <Image source={{uri: 'data:image/jpeg;base64,' + item.images[imageId]}} 
             style={{width: 80, height: 80, marginLeft: (index==0) ? 0 : 23, marginBottom: 23}} />
           <Ionicon 
             style={{position: 'absolute', right: -15, top: -15, backgroundColor: 'white', borderRadius: 17, width: 30, height: 31}} 
@@ -130,7 +130,7 @@ class ListItem extends React.Component {
             />
           <Icon name="edit" onPress={()=>this.setState({editingItemName: true})} style={{marginLeft: 15}} size={34} />
         </View>
-        <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+        <View style={{flex: 1, alignItems: "center", justifyContent: "center", minHeight: 100}}>
           <TextInput
             onChangeText={(text) => this.setState({itemContent: text})}
             value={this.state.itemContent}
@@ -145,7 +145,7 @@ class ListItem extends React.Component {
         </View>
         <View style={{alignItems:'center', marginBottom: 10}}>
           <Ionicon.Button name='md-add' onPress={this.attachContact.bind(this)}>ATTACH CONTACT</Ionicon.Button>
-          <View style={{marginTop: 8}}>
+          <View style={{marginTop: 8, alignItems: 'center'}}>
             {contacts}
           </View>
         </View>

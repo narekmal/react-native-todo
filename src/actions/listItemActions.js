@@ -119,14 +119,14 @@ export function addItemImage(listId, itemId, imageData){
       imageData
     });
     axios
-      .get(config.apiUrl, { params: {
+      .post(config.apiUrl, {
         operation: 'additemimage',
         token: store.getState().authToken,
         listId: listId,
         itemId: itemId,
         imageId: uuid,
         imageData: imageData
-      }})
+      })
       .then(response => {
         console.log(response.data);
       })
